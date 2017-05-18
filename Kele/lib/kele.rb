@@ -1,4 +1,6 @@
 require "httparty"
+require './lib/roadmap.rb'
+include Roadmap
  
  class Kele
    include HTTParty
@@ -25,6 +27,8 @@ require "httparty"
      response = self.class.get(base_api_endpoint("mentors/#{mentor_id}/student_availability"), headers: { "authorization" => @auth_token })
      @mentor_availability = JSON.parse(response.body)
    end
+   
+   
  
  private
  
