@@ -1,8 +1,14 @@
 module Roadmap
     
-    def create_submissions(checkpoint_id, assignment_branch, assignment_commit_link, comment)
-     response = self.class.post(base_api_endpoint("checkpoint_submissions"), body: { "checkpoint_id": checkpoint_id, "assignment_branch": assignment_branch, "assignment_commit_link": assignment_commit_link, "comment": comment }, headers: { "authorization" => @auth_token })
-     puts response
+    def create_submission(checkpoint_id, assignment_branch, assignment_commit_link, comment)
+        
+    response = self.class.get(base_api_endpoint("users/me"), headers: { "authorization" => @auth_token })
+    @get_me = JSON.parse(response.body)
+        
+    id = @get_me["current_enrollment"]["id"]
+
+    response = self.class.post(base_api_endpoint("checkpoint_submissions"), :body => { "enrollment_id" => id, "checkpoint_id" => checkpoint_id, "assignment_branch" => assignment_branch, "assignment_commit_link" => assignment_commit_link, "comment" => comment }, headers: { "authorization" => @auth_token })
+    puts response
    end
     
   def get_roadmap(roadmap_id)
@@ -49,9 +55,9 @@ module Roadmap
        
        
     response = self.class.get(base_api_endpoint("users/me"), headers: { "authorization" => @auth_token })
-    @get_messages = JSON.parse(response.body)
+    @get_me = JSON.parse(response.body)
         
-    id = @get_messages["id"]
+    id = @get_me["id"]
     response = self.class.post(base_api_endpoint("messages"), body: { "user_id": id, "recipient_id": recipient_id, "subject": subject, "stripped-text": message }, headers: { "authorization" => @auth_token })
     puts response
     
